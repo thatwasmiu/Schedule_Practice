@@ -1,10 +1,8 @@
 package com.huynne.project.endpoint;
 
+import com.huynne.project.model.ScheduleTask;
 import com.huynne.project.service.DynamicSchedulerService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/scheduler")
@@ -13,24 +11,16 @@ public class SchedulerEndpoint {
 
     public SchedulerEndpoint(DynamicSchedulerService schedulerService) {
         this.schedulerService = schedulerService;
-        schedulerService.startTask(); // start mặc định khi app khởi động
     }
 
     @PostMapping("/update")
-    public String update(@RequestParam String cron) {
-        schedulerService.updateCron(cron);
-        return "Updated cron to: " + cron;
+    public ScheduleTask update(@RequestBody ScheduleTask scheduleTask) {
+        return schedulerService.addTask(scheduleTask);
     }
 
     @PostMapping("/stop")
-    public String stop() {
-        schedulerService.stopTask();
+    public String stop(@RequestParam("id") Long id) {
+        schedulerService.stopTask(id);
         return "Task stopped!";
-    }
-
-    @PostMapping("/start")
-    public String start() {
-        schedulerService.startTask();
-        return "Task started!";
     }
 }

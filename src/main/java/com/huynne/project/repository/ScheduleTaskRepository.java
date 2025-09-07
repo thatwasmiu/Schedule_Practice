@@ -1,7 +1,11 @@
 package com.huynne.project.repository;
 
-import com.huynne.project.model.Schedule;
+import com.huynne.project.model.ScheduleTask;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+import java.util.List;
+
+public interface ScheduleTaskRepository extends JpaRepository<ScheduleTask, Long> {
+
+    List<ScheduleTask> findAllByActiveIsTrue();
 }

@@ -1,22 +1,25 @@
 package com.huynne.project.bot;
 
 import com.huynne.project.bot.base.BaseLongPollingBot;
+import com.huynne.project.bot.base.MessageSender;
+import com.huynne.project.model.ScheduleTask;
+import com.huynne.project.model.TeleChat;
+import com.huynne.project.repository.TeleChatRepository;
 import com.huynne.project.service.DynamicSchedulerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.ParseMode;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.InputStream;
-import java.util.List;
 
 @Service
 public class HuyenBot extends BaseLongPollingBot {
     private final DynamicSchedulerService dynamicSchedulerService;  // an example dependency
+
+    @Autowired
+    private TeleChatRepository teleChatRepository;
+    public static MessageSender messageSender;
 
     public HuyenBot(DynamicSchedulerService dynamicSchedulerService,
                     @Value("${telegram.bot.usernaem:bot1}") String username,
@@ -24,6 +27,7 @@ public class HuyenBot extends BaseLongPollingBot {
     {
         super(username, token);
         this.dynamicSchedulerService = dynamicSchedulerService;
+        messageSender = new MessageSender(token);
     }
 
     @Override
@@ -45,37 +49,29 @@ public class HuyenBot extends BaseLongPollingBot {
                 sendTextMsg(chatId, "Chào Huyền");
                 break;
             case "/init":
-                // Todo: Thêm tính năng cho bot
+                initChat(message);
         }
+    }
+
+    public void startAllTasks() {
+        dynamicSchedulerService.startAllTask();
+    }
+
+    public void initChat(Message message) {
+        TeleChat teleChat = new TeleChat();
+        teleChat.setChatId(message.getChatId().toString());
+        teleChat.setName(message.getChat().getTitle());
+        teleChat.setDescription(message.getChat().getDescription());
+        teleChatRepository.save(teleChat);
+//        dynamicSchedulerService.addTask(new ScheduleTask());
     }
 
 
     public Message sendTextMsg(String chatId, String textContent) {
-        SendMessage sm = SendMessage.builder()
-                .chatId(chatId)
-                .parseMode(ParseMode.HTML)
-                .text(textContent).build();
-        try {
-            return execute(sm);  // hảm execute gửi tin
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return messageSender.sendTextMsg(chatId, textContent);
     }
 
     public Message sendImageMsg(String chatId, Integer msgId, String caption, InputStream image, String fileName) {
-        InputFile photo = new InputFile(image, fileName);
-        try {
-            SendPhoto sp = SendPhoto.builder()
-                    .chatId(chatId)
-                    .caption(caption)
-                    .replyToMessageId(msgId)
-                    .parseMode(ParseMode.HTML)
-                    .photo(photo).build();
-            return execute(sp);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return messageSender.sendImageMsg(chatId, msgId, caption, image, fileName);
     }
 }

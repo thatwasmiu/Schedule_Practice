@@ -25,8 +25,17 @@ public class BotRegister {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botSession = botsApi.registerBot(huyenBot);
             huyenBot.initBotCommand(BotConstants.COMMAND_LIST);
+            huyenBot.startAllTasks();
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+    }
+
+    public HuyenBot getHuyenBot() {
+        return huyenBot;
+    }
+
+    public BotSession getBotSession() {
+        return botSession;
     }
 }
