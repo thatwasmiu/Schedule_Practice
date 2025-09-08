@@ -1,5 +1,6 @@
 package com.huynne.project.bot;
 
+import com.huynne.project.bot.base.MessageSender;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -15,6 +16,8 @@ public class BotRegister {
 
     private BotSession botSession;
 
+    public static MessageSender messageSender;
+
     public BotRegister(HuyenBot huyenBot) {
         this.huyenBot = huyenBot;
     }
@@ -24,6 +27,7 @@ public class BotRegister {
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
             botSession = botsApi.registerBot(huyenBot);
+            messageSender = huyenBot.getMessageSender();
             huyenBot.initBotCommand(BotConstants.COMMAND_LIST);
             huyenBot.startAllTasks();
         } catch (TelegramApiException e) {

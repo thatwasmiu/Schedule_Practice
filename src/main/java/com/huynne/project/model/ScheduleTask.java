@@ -17,9 +17,9 @@ public class ScheduleTask {
 
     private String description;
 
-    private Boolean active;
+    private Boolean active = true;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "chat_schedule",
             joinColumns = @JoinColumn(name = "schedule_id", referencedColumnName = "id"),

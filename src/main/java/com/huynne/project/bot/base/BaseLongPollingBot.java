@@ -58,7 +58,7 @@ public class BaseLongPollingBot extends TelegramLongPollingBot {
         return buttonCallBack != null && message == null;
     }
 
-    private boolean checkInValidTime(Integer sentDate) {
+    protected boolean checkInValidTime(Integer sentDate) {
         Long date = Long.valueOf(sentDate);
         return System.currentTimeMillis() - date*1000 > 123000;    // thời điểm gửi tin trong khoảng 2 phút từ thời điểm hiện tại
     }

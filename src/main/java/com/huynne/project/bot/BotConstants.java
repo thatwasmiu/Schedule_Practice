@@ -19,13 +19,13 @@ public class BotConstants {
             .command("schedules").description("Lấy danh sách nhắc nhở").build();
 
     public final static BotCommand SCHEDULE_CREATE = BotCommand.builder()
-            .command("schedule_create").description("Tạo nhắc nhở").build();
+            .command("create_schedule").description("Tạo nhắc nhở").build();
 
     public final static BotCommand SCHEDULE_UPDATE = BotCommand.builder()
-            .command("schedule_update").description("Sửa nhắc nhở").build();
+            .command("update_schedule").description("Sửa nhắc nhở").build();
 
     public final static BotCommand SCHEDULE_DELETE = BotCommand.builder()
-            .command("schedule_delete").description("Xóa nhắc nhở").build();
+            .command("delete_schedule").description("Xóa nhắc nhở").build();
 
     public final static List<BotCommand> COMMAND_LIST = new ArrayList<BotCommand>() {{
         add(HELLO_HUYEN);
